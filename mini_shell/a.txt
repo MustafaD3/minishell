@@ -1,0 +1,10 @@
+asoy8dtr6asudyıoaskjd
+sdfsf
+efesf
+make valgrind
+make
+make[1]: Entering directory '/home/mdalkili/Desktop/minishell/mini_shell'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/home/mdalkili/Desktop/minishell/mini_shell'
+valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
+[?2004h[1;34mmdalkili@localhost:[1;35m~/Desktop/minishell/mini_shell[0m$ ersres^C[?2004l

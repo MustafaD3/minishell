@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:27 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/22 02:12:36 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/22 19:42:50 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,12 @@ void	init_shell(t_shell *shell, char **envp)
     shell->command_p = NULL;
     
     // Builtin komutları başlat
-    shell->builtin[0] = ft_strdup("echo");
-    shell->builtin[1] = NULL;
+    shell->builtin[0] = ft_strdup("exit");
+	shell->builtin[1] = ft_strdup("echo");
+	shell->builtin[2] = ft_strdup("cd");
+    shell->builtin[3] = NULL;
     
-	shell->tokens[0] = ft_strdup("&&");
+	shell->tokens[0] = ft_strdup("|");
 	shell->tokens[1] = NULL;
     get_hostname(shell);
 	///
@@ -62,6 +64,8 @@ void start_minishell(t_shell *shell)
         shell->current_dir = getcwd(NULL, 0);
         get_display_info(shell);
         get_prompt(shell);
+		if(shell->command_p)
+			execute(shell);
     }
 }
 

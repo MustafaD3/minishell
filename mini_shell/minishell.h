@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/22 02:04:50 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/22 20:13:00 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,17 @@ typedef struct s_command
 	char *command;
 	struct s_parameters *parameters_p;
 	char *token;
+	int token_flag;
 	int flag;
+	int builtin;
 	struct s_command *next;
 }	t_command;
 
 // Shell yapıları
 typedef struct s_shell
 {
-	char	*builtin[2];
-	char	*tokens[2];
+	char	*builtin[8];
+	char	*tokens[8];// && || | > >> << <
 	char	*prompt;
 	char	**envp;
 	char	*current_dir;
@@ -107,11 +109,13 @@ char 	*get_characters(char **prompt);
 char 	*expand_if_dollar(const char *str, int *i);
 char 	*get_next_char(const char *str, int *i);
 char	*string_concatation_heap(char **str);
-void 	append_command(t_shell *shell, char *str, t_command **temp);
+void 	append_command(t_shell *shell, char *str,int builtin, t_command **temp);
 void 	append_parameter(t_parameters *new_param, t_command **temp);
 void	append_token(char *str, t_command **temp);
-int		prompt_type_control_loop(char **array, char *str);
-
+int prompt_type_control_loop(char **control_list,int type,char *str);
+//
+void execute(t_shell *shell);
+int run(t_command *command,char **params,t_shell *shell);
 //FREE
 void 	free_argv(char **argv);
 void	free_shell(t_shell *shell);
@@ -125,7 +129,7 @@ void	free_multiple_input(char **multiple_input);
 void	free_command(t_shell *shell);
 
 //BUİLTİN
-int 	builtin_exe(t_shell *shell, char **argv);
+int		builtin(t_command **command);
 int		builtin_echo(char **argv);
 int		builtin_cd(t_shell *shell, char **args);
 int 	builtin_pwd(void);
