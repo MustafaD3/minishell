@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/22 20:13:00 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/25 01:46:01 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ void	free_options(t_shell *shell);
 void	free_quote(t_quote *quote);
 void	free_multiple_input(char **multiple_input);
 void	free_command(t_shell *shell);
+void	free_parameters(struct s_parameters *parameters_p);
 
 //BUİLTİN
 int		builtin(t_command **command);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:06:02 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/22 20:24:23 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/24 20:30:20 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void append_parameter(t_parameters *new_param, t_command **temp)
 			p = p->next;
 		p->next = new_param;
 	}
+
 }
 
 void append_token(char *token, t_command **temp)

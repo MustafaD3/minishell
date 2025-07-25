@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:23:54 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/21 20:27:47 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/24 20:35:49 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,5 +163,17 @@ void free_command(t_shell *shell)
 			free(current);
 			current = next;
 		}
+	}
+}
+void free_parameters(t_parameters *params)
+{
+	t_parameters *temp;
+
+	while (params)
+	{
+		temp = params;
+		params = params->next;
+		free(temp->parameter);
+		free(temp);
 	}
 }

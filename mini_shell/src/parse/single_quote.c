@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 10:36:58 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/15 18:15:40 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/24 20:14:37 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ char *single_quote_control(char **prompt)
 {
 	char *result;
 	char *temp;
-
 	result = single_quote(prompt);
 	while(**prompt &&  **prompt != '"' && **prompt != ' ')
 	{

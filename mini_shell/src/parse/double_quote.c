@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 20:07:25 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/18 17:06:54 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/25 01:55:50 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,12 @@ static char *dq_expand_and_concat(const char *str, int start, int end)
     
     result = NULL;
     i = start;
-    while (i < end) {
+    while (i <= end ) {
+		if(str[i] == '"')
+		{
+			i++;
+			continue;
+		}
         if (str[i] == '$')
             tmp = expand_if_dollar(str, &i);
         else
@@ -42,6 +47,7 @@ static void double_quote_loop(t_quote *quote)
         if(ft_strchr(quote->current_parameter, '"') && counter_quote(quote->current_parameter, "\"") % 2 == 1)
         {
             expanded = dq_expand_and_concat(quote->current_parameter, 0, ft_strlen(quote->current_parameter));
+
             quote->parameters = copy_multiple_input(quote->parameters, expanded, quote->len);
             free(expanded);
             break;

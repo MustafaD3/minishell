@@ -21,11 +21,12 @@ char **get_params(t_command *command)
     }
     params[0] = command->command;
     i = 1;
-    while(command->parameters_p && command->parameters_p->parameter)
+    param = command->parameters_p; // Orijinal pointer'ı korumak için yeniden başlat
+    while(param && param->parameter)
     {
-        params[i] = command->parameters_p->parameter;
+        params[i] = param->parameter;
         i++;
-        command->parameters_p = command->parameters_p->next;
+        param = param->next;
     }
     params[i] = NULL;
     return params;
@@ -36,7 +37,6 @@ void execute(t_shell *shell)
     char **params;
 
     params = get_params(shell->command_p);
-	printf("Executing command: %s\n", shell->command_p->command);
     if (shell->command_p->builtin == 2 || shell->command_p->builtin == 1)
 		run(shell->command_p, params,shell);
 	else if(shell->command_p->builtin == 3)
@@ -49,8 +49,8 @@ void execute(t_shell *shell)
 			builtin_exit(params);
 		else if(ft_strcmp(shell->command_p->command,"env") == 0)
 			builtin_env(shell->envp);
-		
-		free(params);
 	}
+	free(params);
+
 }
 
