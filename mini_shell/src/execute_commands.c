@@ -50,7 +50,8 @@ void execute(t_shell *shell)
 		else if(ft_strcmp(shell->command_p->command,"env") == 0)
 			builtin_env(shell->envp);
 	}
-	free(params);
+	if(params)
+		free(params);
 
 }
 

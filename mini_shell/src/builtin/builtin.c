@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 16:30:18 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/22 20:12:43 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/28 18:35:54 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,12 @@ int run(t_command *command,char **params,t_shell *shell)
         exit(EXIT_FAILURE);
     }
     else if (pid > 0)
-    {
-        // Ana proses: bekle
         waitpid(pid, &status, 0);
-    }
     else
     {
         perror("fork");
-        free(params);
         return -1;
     }
-    free(params);
     return 0;
 }
 
