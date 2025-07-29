@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:06:02 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/26 02:53:29 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/29 19:09:02 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,28 +79,27 @@ void append_token(char *token, t_command **temp)
 int prompt_type_control_loop(char **control_list,int type,char *str)
 {
 	int i;
+	char *temp_str;
 	
 	i = 0;
 	if(type)
 	{
 		while(control_list && control_list[i])
-		{
-			if (ft_strcmp(control_list[i], str) == 0)
-				return 3;
-			i++;
-		}
+			if (ft_strcmp(control_list[i++], str) == 0)
+				return 4;
 		if(access(str, F_OK) == 0)
+			return 3;
+		temp_str = ft_strjoin("/bin/",str);
+		i = access(temp_str,F_OK);
+		free(temp_str);
+		if(i == 0)
 			return 2;
 		else
 			return 1;
 	}
-	else{
+	else
 		while (control_list[i])
-    	{
-			if (ft_strcmp(control_list[i], str) == 0)
-				return 4;
-			i++;
-    	}
-	}
+			if (ft_strcmp(control_list[i++], str) == 0)
+				return 5;
 	return 0;
 }

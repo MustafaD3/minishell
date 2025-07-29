@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:27 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/24 21:43:09 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:23:20 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ void start_minishell(t_shell *shell)
             free(shell->current_dir);
         shell->current_dir = getcwd(NULL, 0);
         get_display_info(shell);
-        get_prompt(shell);
+        if(!get_prompt(shell))
+			break;
 		if(shell->command_p)
 			execute(shell);
     }
@@ -82,6 +83,7 @@ int	main(int argc, char **argv, char **envp)
 	ft_memset(&shell, 0, sizeof(t_shell));
 	
 	init_shell(&shell, envp);
+	setup_signals();
 	start_minishell(&shell);
 	free_shell(&shell);
 	return (0);

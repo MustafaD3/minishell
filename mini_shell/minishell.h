@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/25 01:46:01 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:56:11 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-
 # ifndef BUFFER_SIZE
 # define BUFFER_SIZE	1024
 # endif
@@ -97,9 +96,11 @@ void	get_display_info(t_shell *shell);
 void	get_hostname(t_shell *shell);
 int		open_file(char *filename, int flags);
 
+//SIGNAL
+void setup_signals(void);
 
 //PARSER
-void	get_prompt(t_shell *shell);
+int	get_prompt(t_shell *shell);
 char	*single_quote_control(char **prompt);
 char	*double_quote_control(char **prompt);
 t_quote *quote_init(void);
@@ -137,7 +138,7 @@ int 	builtin_pwd(void);
 int 	builtin_env(char **envp);
 int		builtin_export(char ***envp, char **argv);
 int		builtin_unset(t_shell *shell, char *name);
-void	builtin_exit(char **argv);
+void	builtin_exit(t_shell *shell);
 
 //ENVIRONMENT
 char	*mini_getenv(const char *key, char **envp);

@@ -22,7 +22,8 @@ SRCS = minishell.c\
 		src/parse/double_quote.c\
 		src/parse/single_quote.c\
 		src/parse/expand.c\
-		src/parse/append.c
+		src/parse/append.c\
+		src/signal.c
 
 OBJS = $(SRCS:.c=.o)
 

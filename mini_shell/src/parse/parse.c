@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/25 00:25:50 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:53:19 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,17 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
 	char *temp_str;
     if (!str || !shell)
         return;
-        
-    if(!*command && (prompt_type_control_loop(shell->builtin,1,str) == 1 || prompt_type_control_loop(shell->builtin,1,str) == 2 || (prompt_type_control_loop(shell->builtin,1,str) == 3)))
+    if(!*command && prompt_type_control_loop(shell->builtin,1,str) >= 1 && prompt_type_control_loop(shell->builtin,1,str) <= 4)
     {
-		if(prompt_type_control_loop(shell->builtin,1,str) == 1)
+		if(prompt_type_control_loop(shell->builtin,1,str) == 2)
 			temp_str = ft_strjoin("/bin/",str);
 		else
 			temp_str = ft_strdup(str);
 		append_command(shell, temp_str, prompt_type_control_loop(shell->builtin,1,str), temp);
+		free(temp_str);
 		*command = 1;
 	}
-    else if(prompt_type_control_loop(shell->tokens,0,str) == 4)
+    else if(prompt_type_control_loop(shell->tokens,0,str) == 5)
     {
 		append_token(str,temp);
 		*command = 0;
@@ -189,13 +189,18 @@ void	get_display_info(t_shell *shell)
 	free(path);
 }
 
-void	get_prompt(t_shell *shell)
+int	get_prompt(t_shell *shell)
 {
 	shell->prompt = set_and_free(shell->prompt, readline(shell->display_info));
+	if(!shell->prompt)
+	{
+		printf("exit\n");
+		return 0;
+	}
 	if(shell->prompt && *shell->prompt)
 	{
 		parse_prompt(shell);
 		add_history(shell->prompt);
 	}
-
+	return 1;
 }

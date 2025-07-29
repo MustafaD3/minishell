@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:23:54 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/24 20:35:49 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:27:29 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,18 @@ void free_shell(t_shell *shell)
 		free(shell->display_info);
 	if (shell->hostname)
 		free(shell->hostname);
-	
-	// Builtin dizisini temizle
 	i = 0;
-	while (i < 7 && shell->builtin[i])
+	while (shell->builtin[i])
 	{
 		free(shell->builtin[i]);
 		i++;
 	}
-	
-	// Command listesini temizle
+	i = 0;
+    while (shell->tokens[i])
+    {
+        free(shell->tokens[i]);
+        i++;
+    }
 	free_command(shell);
 	if (shell->envp)
 	{
