@@ -3,27 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:38:48 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/17 16:33:40 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/04 19:19:54 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int builtin_pwd(void)
+static int	is_valid_option(const char *param)
 {
-    char *cwd;
+    int	i;
 
-    cwd = getcwd(NULL, 0);
-    if (!cwd)
+    if (!param || param[0] != '-' || param[1] == '\0')
+        return (0);
+    i = 1;
+    while (param[i])
     {
-        write(2, "pwd: failed to get current directory\n", 37);
-        return 1;
+        if (param[i] != 'L' && param[i] != 'P')
+            return (0);
+        i++;
     }
-    write(1, cwd, ft_strlen(cwd));
-    write(1, "\n", 1);
-    free(cwd);
-    return 0;
+    return (1);
+}
+
+int	builtin_pwd(char **params)
+{
+	char	*cwd;
+	char	*pwd_env;
+	int		use_logical;
+	int		i;
+
+	use_logical = 1;
+	i = 1;
+	while (params && params[i])
+	{
+		if (is_valid_option(params[i]))
+		{
+			if (ft_strchr(params[i], 'P'))
+				use_logical = 0;
+		}
+		else
+			write(STDERR_FILENO,"pwd: %s: seçenek olmayan argümanlar yok sayılıyor\n", 38);
+		i++;
+	}
+	pwd_env = getenv("PWD");
+	if (use_logical && pwd_env && access(pwd_env, F_OK) == 0)
+		return (printf("%s\n", pwd_env), 0);
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		return (write(STDERR_FILENO,"pwd: failed to get current directory\n", 38), 1);
+	return (printf("%s\n", cwd), free(cwd), 0);
 }

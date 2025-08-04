@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 16:08:25 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/17 16:23:01 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/04 19:07:51 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	builtin_cd(t_shell *shell, char **args)
 
 	oldpwd = getcwd(NULL, 0);
 	if (!oldpwd)
-		return (write(2, "cd: error getting current directory\n", 36), 1);
+		return (write(STDERR_FILENO, "cd: error getting current directory\n", 36), 1);
 
 	if (!args[1] || !args[1][0])
 		newpwd = mini_getenv("HOME", shell->envp);
@@ -29,7 +29,7 @@ int	builtin_cd(t_shell *shell, char **args)
 	if (!newpwd || chdir(newpwd) != 0)
 	{
 		free(oldpwd);
-		write(2, "cd: No such file or directory\n", 30);
+		write(STDERR_FILENO, "cd: No such file or directory\n", 30);
 		return (1);
 	}
 
@@ -38,7 +38,7 @@ int	builtin_cd(t_shell *shell, char **args)
 
 	oldpwd = getcwd(NULL, 0);
 	if (!oldpwd)
-		return (write(2, "cd: error getting current directory\n", 36), 1);
+		return (write(STDERR_FILENO, "cd: error getting current directory\n", 36), 1);
 
 	shell->envp = mini_setenv(shell->envp, "PWD", oldpwd, 1);
 	free(oldpwd);

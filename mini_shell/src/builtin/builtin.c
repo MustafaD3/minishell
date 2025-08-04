@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 16:30:18 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/28 18:35:54 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/04 19:10:51 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int run(t_command *command,char **params,t_shell *shell)
     pid = fork();
     if (pid == 0)
     {
-        // Çocuk proses: execve çağır
+		signal(SIGINT, SIG_DFL);
+    	signal(SIGQUIT, SIG_DFL);
         execve(command->command, params, shell->envp);
         perror("execve");
         exit(EXIT_FAILURE);

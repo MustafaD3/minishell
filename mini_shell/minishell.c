@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:27 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/29 18:23:20 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/04 18:31:22 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,18 @@ void	init_shell(t_shell *shell, char **envp)
     shell->prompt = NULL;
 	shell->current_dir = NULL;
 	shell->display_info = NULL;
+	shell->last_exit_code = 0;
     shell->command_p = NULL;
     
     // Builtin komutları başlat
-    shell->builtin[0] = ft_strdup("exit");
-	shell->builtin[1] = ft_strdup("echo");
+    shell->builtin[0] = ft_strdup("echo");
+	shell->builtin[1] = ft_strdup("pwd");
 	shell->builtin[2] = ft_strdup("cd");
-    shell->builtin[3] = NULL;
+	shell->builtin[3] = ft_strdup("export");
+	shell->builtin[4] = ft_strdup("unset");
+	shell->builtin[5] = ft_strdup("env");
+	shell->builtin[6] = ft_strdup("exit");
+    shell->builtin[7] = NULL;
     
 	shell->tokens[0] = ft_strdup("|");
 	shell->tokens[1] = NULL;
@@ -43,7 +48,7 @@ void	init_shell(t_shell *shell, char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		shell->envp[i] = strdup(envp[i]);
+		shell->envp[i] = ft_strdup(envp[i]);
 		if (!shell->envp[i])
 		{
 			perror("strdup");

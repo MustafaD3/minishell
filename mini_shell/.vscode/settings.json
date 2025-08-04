@@ -1,5 +1,11 @@
 {
 	"files.associations": {
-		"minishell.h": "c"
+		"minishell.h": "c",
+		"streambuf": "c",
+		"exception": "c",
+		"memory_resource": "c",
+		"iosfwd": "c",
+		"new": "c",
+		"ostream": "c"
 	}
 }

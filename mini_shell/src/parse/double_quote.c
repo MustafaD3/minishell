@@ -6,13 +6,13 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 20:07:25 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/29 17:32:00 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/04 18:40:29 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static char *dq_expand_and_concat(const char *str, int start, int end)
+static char *dq_expand_and_concat(const char *str, int start, int end,t_shell *shell)
 {
     char *result;
     char *tmp;
@@ -27,7 +27,7 @@ static char *dq_expand_and_concat(const char *str, int start, int end)
 			continue;
 		}
         if (str[i] == '$')
-            tmp = expand_if_dollar(str, &i);
+            tmp = expand_if_dollar(str, &i,shell);
         else
             tmp = get_next_char(str, &i);
         result = set_and_free(result, ft_strjoin(result ? result : "", tmp));
@@ -36,7 +36,7 @@ static char *dq_expand_and_concat(const char *str, int start, int end)
     return result;
 }
 
-static void double_quote_loop(t_quote *quote)
+static void double_quote_loop(t_quote *quote,t_shell *shell)
 {
 	char *expanded;
 	
@@ -46,13 +46,13 @@ static void double_quote_loop(t_quote *quote)
         quote->len++;
         if(ft_strchr(quote->current_parameter, '"') && counter_quote(quote->current_parameter, "\"") % 2 == 1)
         {
-            expanded = dq_expand_and_concat(quote->current_parameter, 0, ft_strlen(quote->current_parameter));
+            expanded = dq_expand_and_concat(quote->current_parameter, 0, ft_strlen(quote->current_parameter),shell);
 
             quote->parameters = copy_multiple_input(quote->parameters, expanded, quote->len);
             free(expanded);
             break;
         }
-        expanded = dq_expand_and_concat(quote->current_parameter, 0, ft_strlen(quote->current_parameter));
+        expanded = dq_expand_and_concat(quote->current_parameter, 0, ft_strlen(quote->current_parameter),shell);
         quote->parameters = copy_multiple_input(quote->parameters, expanded, quote->len);
         free(expanded);
         quote->parameters = copy_multiple_input(quote->parameters, "\n", ++quote->len);
@@ -60,7 +60,7 @@ static void double_quote_loop(t_quote *quote)
     }
 }
 
-static char *double_quote(char **prompt)
+static char *double_quote(char **prompt,t_shell *shell)
 {
 	char	*start;
 	char	*end;
@@ -73,11 +73,11 @@ static char *double_quote(char **prompt)
 	end = ft_strchr(start + 1, '"');
 	if (!end)
 	{
-		expanded_first = dq_expand_and_concat(start + 1, 0, ft_strlen(start + 1));
+		expanded_first = dq_expand_and_concat(start + 1, 0, ft_strlen(start + 1),shell);
 		quote->parameters = copy_multiple_input(quote->parameters, expanded_first, ++quote->len);
 		free(expanded_first);
 		quote->parameters = copy_multiple_input(quote->parameters, "\n", ++quote->len);
-		double_quote_loop(quote);
+		double_quote_loop(quote,shell);
 	}
 	if(quote->len > 0)
 	{
@@ -88,28 +88,28 @@ static char *double_quote(char **prompt)
 		return result;
 	}
 	else{
-		result = dq_expand_and_concat(start, 1, end - start);
+		result = dq_expand_and_concat(start, 1, end - start,shell);
 		*prompt = end + 1;
 		free_quote(quote);
 		return result;
 	}
 }
-char *double_quote_control(char **prompt)
+char *double_quote_control(char **prompt,t_shell *shell)
 {
 	char *result;
 	char *temp;
 
-	result = double_quote(prompt);
+	result = double_quote(prompt,shell);
 	while(**prompt && **prompt != '\'' && **prompt != ' ')
 	{
 		if(**prompt == '"')
 		{
-			temp = double_quote(prompt);
+			temp = double_quote(prompt,shell);
 			result = set_and_free(result, ft_strjoin(result, temp));
 			free(temp);
 		}
 		else{
-			temp = get_characters(prompt);
+			temp = get_characters(prompt,shell);
 			result = set_and_free(result, ft_strjoin(result, temp));
 			free(temp);
 		}
@@ -117,7 +117,7 @@ char *double_quote_control(char **prompt)
 	if(**prompt == '\'' && *(*prompt + 1) != '\'')
 	{
 		temp = result;
-		result = ft_strjoin(temp, single_quote_control(prompt));
+		result = ft_strjoin(temp, single_quote_control(prompt,shell));
 		if (temp)
 			free(temp);
 	}

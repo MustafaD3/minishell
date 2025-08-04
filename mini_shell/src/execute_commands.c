@@ -2,29 +2,25 @@
 
 char **get_params(t_command *command)
 {
-	int i;
+    int i, count = 0;
     char **params;
     t_parameters *param;
 
     param = command->parameters_p;
-    i = 0;
     while(param && param->parameter)
     {
-        i++;
+        count++;
         param = param->next;
     }
-    params = malloc(sizeof(char *) * (i + 2));
+    params = malloc(sizeof(char *) * (count + 2));
     if (!params)
-    {
-        perror("malloc");
         return NULL;
-    }
-    params[0] = command->command;
+    params[0] = ft_strdup(command->command);
     i = 1;
-    param = command->parameters_p; // Orijinal pointer'ı korumak için yeniden başlat
+    param = command->parameters_p;
     while(param && param->parameter)
     {
-        params[i] = param->parameter;
+        params[i] = ft_strdup(param->parameter);
         i++;
         param = param->next;
     }
@@ -35,25 +31,39 @@ char **get_params(t_command *command)
 void execute(t_shell *shell)
 {
     char **params;
+	int exit_code;
 
+	exit_code = 0;
     params = get_params(shell->command_p);
 	if(shell->command_p->builtin == 1)
+	{
 		printf("makboga:mdalkili minishell:Command Not Found\n");
+		shell->last_exit_code = 127;
+		if(params)
+			free(params);
+		return;
+	}
     if (shell->command_p->builtin == 3 || shell->command_p->builtin == 2)
-		run(shell->command_p, params,shell);
+		exit_code = run(shell->command_p, params,shell);
 	else if(shell->command_p->builtin == 4)
 	{
 		if(ft_strcmp(shell->command_p->command,"echo") == 0)
-			builtin_echo(params);
+        	exit_code = builtin_echo(params);
 		else if(ft_strcmp(shell->command_p->command,"pwd") == 0)
-			builtin_pwd();
+			exit_code = builtin_pwd(params);
+		else if(ft_strcmp(shell->command_p->command,"cd") == 0)
+			exit_code = builtin_cd(shell, params);
+		else if(ft_strcmp(shell->command_p->command,"export") == 0)
+			exit_code = builtin_export(&(shell->envp), params);
+		else if(ft_strcmp(shell->command_p->command,"unset") == 0)
+			exit_code = builtin_unset(shell, params); 
+		else if(ft_strcmp(shell->command_p->command,"env") == 0)
+			exit_code = builtin_env(shell->envp);
 		else if(ft_strcmp(shell->command_p->command,"exit") == 0)
 			builtin_exit(shell);
-		else if(ft_strcmp(shell->command_p->command,"env") == 0)
-			builtin_env(shell->envp);
 	}
+	shell->last_exit_code = exit_code;
 	if(params)
-		free(params);
-
+		ft_free_split(params);
 }
 

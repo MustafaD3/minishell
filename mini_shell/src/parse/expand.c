@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/25 01:54:34 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/04 18:34:16 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,16 @@ static char	*extract_and_expand_var(const char *str, int start, int end)
     return (expanded);
 }
 
-char *expand_if_dollar(const char *str, int *i)
+char *expand_if_dollar(const char *str, int *i,t_shell *shell)
 {
     int j;
     
     j = *i + 1;
+	if (str[*i + 1] == '?')
+    {
+        *i += 2;
+        return ft_itoa(shell->last_exit_code);
+    }
     if (!(ft_isalnum(str[j]) || str[j] == '_')) {
         (*i)++;
         return ft_strdup("$");
@@ -56,7 +61,7 @@ char *get_next_char(const char *str, int *i)
     return tmp;
 }
 
-char *get_characters(char **prompt)
+char *get_characters(char **prompt,t_shell *shell)
 {
     char *result;
     char *tmp;
@@ -72,7 +77,7 @@ char *get_characters(char **prompt)
     {
         old_i = i;
         if ((*prompt)[i] == '$')
-            tmp = expand_if_dollar(*prompt, &i);
+            tmp = expand_if_dollar(*prompt, &i,shell);
         else
             tmp = get_next_char(*prompt, &i);
         
@@ -90,14 +95,14 @@ char *get_characters(char **prompt)
 	if(**prompt == '\'' && *(*prompt + 1) != '\'')
 	{
 		tmp = result;
-		result = ft_strjoin(tmp,single_quote_control(prompt));
+		result = ft_strjoin(tmp,single_quote_control(prompt,shell));
 		if (tmp)
 			free(tmp);
 	}
 	else if(**prompt == '"' && *(*prompt + 1) != '"')
 	{
 		tmp = result;
-		result = ft_strjoin(tmp,double_quote_control(prompt));
+		result = ft_strjoin(tmp,double_quote_control(prompt,shell));
 		if (tmp)
 			free(tmp);
 	}

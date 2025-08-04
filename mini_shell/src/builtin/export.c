@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:53:24 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/17 16:40:01 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/04 19:17:37 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,19 +120,58 @@ static int	export_single_var(char ***envp, char *arg)
 	return (ret);
 }
 
+void	print_exported_vars(char **envp)
+{
+    int		i, j, count = 0;
+    char	**sorted, *eq;
+
+    while (envp[count])
+        count++;
+    sorted = malloc(sizeof(char *) * (count + 1));
+    if (!sorted)
+        return;
+    for (i = 0; i < count; i++)
+        sorted[i] = envp[i];
+    sorted[count] = NULL;
+    for (i = 0; i < count - 1; i++)
+        for (j = 0; j < count - i - 1; j++)
+            if (ft_strcmp(sorted[j], sorted[j + 1]) > 0)
+            {
+                char *tmp = sorted[j];
+                sorted[j] = sorted[j + 1];
+                sorted[j + 1] = tmp;
+            }
+    for (i = 0; i < count; i++)
+    {
+        eq = ft_strchr(sorted[i], '=');
+        if (eq)
+		//copilot printfleri (write fonksiyonu ile değiştir dprintf ile değil Sayılar yerine stdoutfileno errfileno değerlerini kullan)
+            printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted[i]), sorted[i], eq + 1);
+        else
+            printf("declare -x %s\n", sorted[i]);
+    }
+    free(sorted);
+}
 
 int	builtin_export(char ***envp, char **argv)
 {
-	int	i;
-	int err;
+    int	i;
+    int err;
 
-	i = 1;
-	err = 0;
-	while (argv[i])
-	{
-		if (export_single_var(envp, argv[i]) != 0)
-			err = 1;
-		i++;
-	}
-	return (err);
+    // Argümansız export durumu eklendi
+    if (!argv[1])
+    {
+        print_exported_vars(*envp);
+        return (0);
+    }
+
+    i = 1;
+    err = 0;
+    while (argv[i])
+    {
+        if (export_single_var(envp, argv[i]) != 0)
+            err = 1;
+        i++;
+    }
+    return (err);
 }

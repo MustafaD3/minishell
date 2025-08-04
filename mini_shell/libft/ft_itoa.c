@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atursun <atursun@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:16:24 by atursun           #+#    #+#             */
-/*   Updated: 2024/10/18 10:15:45 by atursun          ###   ########.fr       */
+/*   Updated: 2025/08/04 18:37:25 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ char	*ft_itoa(int number)
 {
 	char	*str;
 	int		len;
-
 	if (number == -2147483648)
 		return (ft_strdup("-2147483648"));
 	len = ft_len(number);

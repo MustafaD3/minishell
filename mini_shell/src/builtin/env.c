@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:18:59 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/17 16:34:54 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/04 19:12:20 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int builtin_env(char **envp)
 
     while (envp && envp[i])
     {
-        write(1, envp[i], ft_strlen(envp[i]));
-        write(1, "\n", 1);
+        write(STDOUT_FILENO, envp[i], ft_strlen(envp[i]));
+        write(STDOUT_FILENO, "\n", 1);
         i++;
     }
     return 0;

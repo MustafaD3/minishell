@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:20:56 by makboga           #+#    #+#             */
-/*   Updated: 2025/07/25 00:22:35 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/04 19:08:50 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,17 @@ int	builtin_echo(char **argv)
 	}
 	while (argv[i])
 	{
-		printf("%s", argv[i]);
+		if (write(STDOUT_FILENO, argv[i], strlen(argv[i])) < 0)
+            return (1);
 		if (argv[i + 1])
-			printf(" ");
+		{
+            if (write(STDOUT_FILENO, " ", 1) < 0)
+                return (1);
+        }
 		i++;
 	}
 	if (!n_flag)
-		printf("\n");
+		if (write(STDOUT_FILENO, "\n", 1) < 0)
+            return (1);
 	return (0);
 }

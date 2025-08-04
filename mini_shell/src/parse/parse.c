@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/07/29 18:53:19 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/04 17:20:18 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void parse_prompt(t_shell *shell)
 	char	*temp_prompt;
 	char	*current_option;
 	char	*start;
-	char * (*parse_func)(char **);
+	char * (*parse_func)(char **,t_shell *);
 	int command;
 	t_command *command_temp_p;
 
@@ -72,7 +72,7 @@ void parse_prompt(t_shell *shell)
 			parse_func = get_characters;
 		if(parse_func)
 		{
-			current_option = parse_func(&temp_prompt);
+			current_option = parse_func(&temp_prompt,shell);
 			if(current_option != NULL)
 			{
 				if(!command_temp_p)
