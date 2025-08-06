@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/04 18:34:16 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/06 04:31:26 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	find_var_end(const char *str, int start)
     return (j);
 }
 
-static char	*extract_and_expand_var(const char *str, int start, int end)
+static char	*extract_and_expand_var(const char *str, int start, int end, t_shell *shell)
 {
     char	*expand_value;
     char	*expanded;
@@ -30,7 +30,14 @@ static char	*extract_and_expand_var(const char *str, int start, int end)
     expand_value = ft_strndup(str + start, end - start);
     if (!expand_value)
         return (ft_strdup(""));
-    expanded = getenv(expand_value) ? ft_strdup(getenv(expand_value)) : ft_strdup("");
+    
+    // Use minishell's environment instead of system getenv
+    expanded = mini_getenv(expand_value, shell->envp);
+    if (expanded)
+        expanded = ft_strdup(expanded);
+    else
+        expanded = ft_strdup("");
+        
     free(expand_value);
     return (expanded);
 }
@@ -50,7 +57,7 @@ char *expand_if_dollar(const char *str, int *i,t_shell *shell)
         return ft_strdup("$");
     }
     j = find_var_end(str, j);
-    char *result = extract_and_expand_var(str, *i + 1, j);
+    char *result = extract_and_expand_var(str, *i + 1, j, shell);
     *i = j;
     return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:27 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/06 04:15:37 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/06 04:31:27 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ void	init_shell(t_shell *shell, char **envp)
     shell->builtin[7] = NULL;
     
 	shell->tokens[0] = ft_strdup("|");
-	shell->tokens[1] = NULL;
+	shell->tokens[1] = ft_strdup(">>");
+	shell->tokens[2] = ft_strdup("<<");
+	shell->tokens[3] = ft_strdup(">");
+	shell->tokens[4] = ft_strdup("<");
+	shell->tokens[5] = NULL;
     get_hostname(shell);
 	///
     int	i;
