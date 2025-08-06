@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:27 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/04 18:31:22 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/06 04:15:37 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void start_minishell(t_shell *shell)
 
 int	main(int argc, char **argv, char **envp)
 {
+	int exit_code;
 	t_shell	shell;
 
 	(void)argc;
@@ -90,6 +91,7 @@ int	main(int argc, char **argv, char **envp)
 	init_shell(&shell, envp);
 	setup_signals();
 	start_minishell(&shell);
+	exit_code = shell.last_exit_code;
 	free_shell(&shell);
-	return (0);
+	return (exit_code);
 }

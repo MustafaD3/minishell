@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/04 16:54:38 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/06 04:18:20 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int 	builtin_pwd(char **params);
 int 	builtin_env(char **envp);
 int		builtin_export(char ***envp, char **params);
 int		builtin_unset(t_shell *shell, char **argv);
-void	builtin_exit(t_shell *shell);
+int		builtin_exit(t_shell *shell, char **params);
 
 //ENVIRONMENT
 char	*mini_getenv(const char *key, char **envp);
