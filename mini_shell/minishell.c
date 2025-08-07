@@ -6,40 +6,16 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:27 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/06 04:31:27 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/07 04:20:34 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_shell(t_shell *shell, char **envp)
+static void	init_shell_envp(t_shell *shell, char **envp)
 {
-    
-    shell->prompt = NULL;
-	shell->current_dir = NULL;
-	shell->display_info = NULL;
-	shell->last_exit_code = 0;
-    shell->command_p = NULL;
-    
-    // Builtin komutları başlat
-    shell->builtin[0] = ft_strdup("echo");
-	shell->builtin[1] = ft_strdup("pwd");
-	shell->builtin[2] = ft_strdup("cd");
-	shell->builtin[3] = ft_strdup("export");
-	shell->builtin[4] = ft_strdup("unset");
-	shell->builtin[5] = ft_strdup("env");
-	shell->builtin[6] = ft_strdup("exit");
-    shell->builtin[7] = NULL;
-    
-	shell->tokens[0] = ft_strdup("|");
-	shell->tokens[1] = ft_strdup(">>");
-	shell->tokens[2] = ft_strdup("<<");
-	shell->tokens[3] = ft_strdup(">");
-	shell->tokens[4] = ft_strdup("<");
-	shell->tokens[5] = NULL;
-    get_hostname(shell);
-	///
-    int	i;
+	int	i;
+
 	i = 0;
 	while (envp[i])
 		i++;
@@ -63,28 +39,49 @@ void	init_shell(t_shell *shell, char **envp)
 	shell->envp[i] = NULL;
 }
 
-void start_minishell(t_shell *shell)
+void	init_shell(t_shell *shell, char **envp)
 {
-
-    while (1)
-    {
-        if (shell->current_dir)
-            free(shell->current_dir);
-        shell->current_dir = getcwd(NULL, 0);
-        get_display_info(shell);
-        if(!get_prompt(shell))
-			break;
-		if(shell->command_p)
-			execute(shell);
-    }
+	shell->prompt = NULL;
+	shell->current_dir = NULL;
+	shell->display_info = NULL;
+	shell->last_exit_code = 0;
+	shell->command_p = NULL;
+	shell->builtin[0] = ft_strdup("echo");
+	shell->builtin[1] = ft_strdup("pwd");
+	shell->builtin[2] = ft_strdup("cd");
+	shell->builtin[3] = ft_strdup("export");
+	shell->builtin[4] = ft_strdup("unset");
+	shell->builtin[5] = ft_strdup("env");
+	shell->builtin[6] = ft_strdup("exit");
+	shell->builtin[7] = NULL;
+	shell->tokens[0] = ft_strdup("|");
+	shell->tokens[1] = ft_strdup(">>");
+	shell->tokens[2] = ft_strdup("<<");
+	shell->tokens[3] = ft_strdup(">");
+	shell->tokens[4] = ft_strdup("<");
+	shell->tokens[5] = NULL;
+	get_hostname(shell);
+	init_shell_envp(shell, envp);
 }
 
-
-
+void	start_minishell(t_shell *shell)
+{
+	while (1)
+	{
+		if (shell->current_dir)
+			free(shell->current_dir);
+		shell->current_dir = getcwd(NULL, 0);
+		get_display_info(shell);
+		if (!get_prompt(shell))
+			break ;
+		if (shell->command_p)
+			execute(shell);
+	}
+}
 
 int	main(int argc, char **argv, char **envp)
 {
-	int exit_code;
+	int		exit_code;
 	t_shell	shell;
 
 	(void)argc;

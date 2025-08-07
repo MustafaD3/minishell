@@ -17,6 +17,7 @@ SRCS = minishell.c\
 		src/builtin/export.c \
 		src/builtin/unset.c \
 		src/free.c \
+		src/free2.c \
 		src/parse/parse_utils.c\
 		src/parse/parse.c\
 		src/parse/double_quote.c\
