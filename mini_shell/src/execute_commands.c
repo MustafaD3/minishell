@@ -60,7 +60,7 @@ void execute(t_shell *shell)
 	// Command not found (return 1)
 	else
 	{
-		printf("minishell: %s: command not found\n", params[0]);
+		write(STDERR_FILENO, "minishell: command not found\n", 29);
 		shell->last_exit_code = 127;
 		if(params)
 			ft_free_split(params);

@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/06 04:19:03 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/07 03:28:38 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void parse_prompt(t_shell *shell)
 			parse_func = single_quote_control;
 		else if(*temp_prompt == '"')
 			parse_func = double_quote_control;
-		else if(*temp_prompt != ' ')
+		else if(*temp_prompt != ' ' && *temp_prompt != '\t')
 			parse_func = get_characters;
 		if(parse_func)
 		{

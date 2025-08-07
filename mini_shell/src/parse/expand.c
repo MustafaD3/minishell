@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/06 04:31:26 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/07 03:35:21 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ char *get_characters(char **prompt,t_shell *shell)
     result = NULL;
     tmp = NULL;
     i = 0;
-    while ((*prompt)[i] && (*prompt)[i] != ' ' && (*prompt)[i] != '\'' &&
-        (*prompt)[i] != '"')
+    while ((*prompt)[i] && (*prompt)[i] != ' ' && (*prompt)[i] != '\t' && 
+        (*prompt)[i] != '\'' && (*prompt)[i] != '"')
     {
         old_i = i;
         if ((*prompt)[i] == '$')
