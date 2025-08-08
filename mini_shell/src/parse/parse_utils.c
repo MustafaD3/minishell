@@ -31,7 +31,6 @@ void print_parameters(t_quote *quote)
 	j = 0;
 	while (quote->parameters && quote->parameters[i])
 	{
-		printf("\n");
 		j = 0;
 		while(quote->parameters[i][j])
 			if(quote->parameters[i][j] != '\'')

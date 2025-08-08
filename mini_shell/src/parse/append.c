@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:06:02 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/06 04:19:00 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:45:06 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,23 @@ void append_parameter(t_parameters *new_param, t_command **temp)
 
 void append_token(char *token, t_command **temp)
 {
-	(*temp)->token = ft_strdup(token);
-	(*temp)->token_flag = 1;
+	// Eğer henüz command yoksa, token için bir command oluştur
+	if (!*temp)
+	{
+		*temp = malloc(sizeof(t_command));
+		(*temp)->command = NULL;
+		(*temp)->next = NULL;
+		(*temp)->parameters_p = NULL;
+		(*temp)->token = ft_strdup(token);
+		(*temp)->flag = 0;
+		(*temp)->token_flag = 1;
+		(*temp)->builtin = 0;
+	}
+	else
+	{
+		(*temp)->token = ft_strdup(token);
+		(*temp)->token_flag = 1;
+	}
 }
 int prompt_type_control_loop(char **control_list,int type,char *str)
 {

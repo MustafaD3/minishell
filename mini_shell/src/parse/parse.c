@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/07 03:28:38 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:45:05 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,15 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
 	char *temp_str;
     if (!str || !shell)
         return;
-    if(!*command && prompt_type_control_loop(shell->builtin,1,str) >= 1 && prompt_type_control_loop(shell->builtin,1,str) <= 4)
+    // Önce token kontrolü yap (>>, <<, >, <, |)
+    if(prompt_type_control_loop(shell->tokens,0,str) == 5)
+    {
+		append_token(str,temp);
+		// Token sonrası parameter bekleniyor, command bitti
+		*command = 2; // Special case: token waiting for parameter
+	}
+    // Sonra builtin/command kontrolü yap
+    else if(!*command && prompt_type_control_loop(shell->builtin,1,str) >= 1 && prompt_type_control_loop(shell->builtin,1,str) <= 4)
     {
 		if(prompt_type_control_loop(shell->builtin,1,str) == 2)
 			temp_str = ft_strjoin("/bin/",str);
@@ -27,11 +35,6 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
 		free(temp_str);
 		*command = 1;
 	}
-    else if(prompt_type_control_loop(shell->tokens,0,str) == 5)
-    {
-		append_token(str,temp);
-		*command = 0;
-	}
     else
     {
         if (*temp)
@@ -40,6 +43,9 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
             new_param->parameter = ft_strdup(str);
             new_param->next = NULL;
             append_parameter(new_param,temp);
+            // Token sonrası parameter aldıktan sonra command reset et
+            if (*command == 2)
+                *command = 1;
         }
     }
     
@@ -54,6 +60,16 @@ void parse_prompt(t_shell *shell)
 	char * (*parse_func)(char **,t_shell *);
 	int command;
 	t_command *command_temp_p;
+	int i;
+
+	// Tab karakterlerini space'e çevir
+	i = 0;
+	while (shell->prompt && shell->prompt[i])
+	{
+		if (shell->prompt[i] == '\t')
+			shell->prompt[i] = ' ';
+		i++;
+	}
 
 	command = 0;
 	free_command(shell);

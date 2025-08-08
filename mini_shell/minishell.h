@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/07 03:49:20 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:52:45 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <errno.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <fcntl.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1024
@@ -111,6 +112,9 @@ void	append_parameter(t_parameters *new_param, t_command **temp);
 void	append_token(char *str, t_command **temp);
 int		prompt_type_control_loop(char **control_list, int type, char *str);
 void	execute(t_shell *shell);
+void	handle_redirection(t_shell *shell, t_command *cmd);
+void	handle_heredoc(t_shell *shell, t_command *cmd);
+char	*expand_variables(char *line, t_shell *shell);
 int		run(t_command *command, char **params, t_shell *shell);
 //FREE
 void	free_argv(char **argv);
