@@ -105,11 +105,13 @@ char	**copy_multiple_input(char **multiple_input, char *temp, int len);
 char	*get_characters(char **prompt, t_shell *shell);
 char	*expand_if_dollar(const char *str, int *i, t_shell *shell);
 char	*get_next_char(const char *str, int *i);
+char	*check_post_expansion_tokens(char *expanded_str, t_shell *shell);
 char	*string_concatation_heap(char **str);
 void	append_command(t_shell *shell, char *str, int builtin,
 			t_command **temp);
 void	append_parameter(t_parameters *new_param, t_command **temp);
 void	append_token(char *str, t_command **temp);
+void	append(t_shell *shell, char *str, int *command, t_command **temp, int is_quoted);
 int		prompt_type_control_loop(char **control_list, int type, char *str);
 void	execute(t_shell *shell);
 void	handle_redirection(t_shell *shell, t_command *cmd);

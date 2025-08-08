@@ -6,32 +6,43 @@
 /*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/08 17:45:05 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:56:07 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void append(t_shell *shell, char *str,int *command, t_command **temp)
+void append(t_shell *shell, char *str,int *command, t_command **temp, int is_quoted)
 {
 	char *temp_str;
+	char *actual_str = str;
+	int is_post_expansion_token = 0;
+	
     if (!str || !shell)
         return;
-    // Önce token kontrolü yap (>>, <<, >, <, |)
-    if(prompt_type_control_loop(shell->tokens,0,str) == 5)
+    
+    // Post-expansion token kontrolü
+    if (ft_strncmp(str, "__TOKEN__", 9) == 0)
     {
-		append_token(str,temp);
+        actual_str = str + 9; // "__TOKEN__" prefix'ini atla
+        is_post_expansion_token = 1;
+    }
+    
+    // Token kontrolü - quoted değilse veya post-expansion token ise
+    if((!is_quoted || is_post_expansion_token) && prompt_type_control_loop(shell->tokens,0,actual_str) == 5)
+    {
+		append_token(actual_str,temp);
 		// Token sonrası parameter bekleniyor, command bitti
 		*command = 2; // Special case: token waiting for parameter
 	}
     // Sonra builtin/command kontrolü yap
-    else if(!*command && prompt_type_control_loop(shell->builtin,1,str) >= 1 && prompt_type_control_loop(shell->builtin,1,str) <= 4)
+    else if(!*command && prompt_type_control_loop(shell->builtin,1,actual_str) >= 1 && prompt_type_control_loop(shell->builtin,1,actual_str) <= 4)
     {
-		if(prompt_type_control_loop(shell->builtin,1,str) == 2)
-			temp_str = ft_strjoin("/bin/",str);
+		if(prompt_type_control_loop(shell->builtin,1,actual_str) == 2)
+			temp_str = ft_strjoin("/bin/",actual_str);
 		else
-			temp_str = ft_strdup(str);
-		append_command(shell, temp_str, prompt_type_control_loop(shell->builtin,1,str), temp);
+			temp_str = ft_strdup(actual_str);
+		append_command(shell, temp_str, prompt_type_control_loop(shell->builtin,1,actual_str), temp);
 		free(temp_str);
 		*command = 1;
 	}
@@ -40,7 +51,7 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
         if (*temp)
         {
             t_parameters *new_param = malloc(sizeof(t_parameters));
-            new_param->parameter = ft_strdup(str);
+            new_param->parameter = ft_strdup(actual_str);
             new_param->next = NULL;
             append_parameter(new_param,temp);
             // Token sonrası parameter aldıktan sonra command reset et
@@ -91,13 +102,16 @@ void parse_prompt(t_shell *shell)
 			current_option = parse_func(&temp_prompt,shell);
 			if(current_option != NULL)
 			{
+				// Quote function mu yoksa normal parsing mi?
+				int is_quoted = (parse_func == single_quote_control || parse_func == double_quote_control);
+				
 				if(!command_temp_p)
 				{
-					append(shell,current_option,&command,&command_temp_p);
+					append(shell,current_option,&command,&command_temp_p,is_quoted);
 					shell->command_p = command_temp_p;
 				}
 				else
-					append(shell,current_option,&command,&shell->command_p);
+					append(shell,current_option,&command,&shell->command_p,is_quoted);
 			}
 			free(current_option);
 			continue;

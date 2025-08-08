@@ -3,14 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/07 03:35:21 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/08 18:09:39 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+// Post-expansion token checking function
+char *check_post_expansion_tokens(char *expanded_str, t_shell *shell)
+{
+    // Sadece token'ları kontrol et, diğer logic'i bozmayalım
+    if (!expanded_str || !shell)
+        return expanded_str;
+    
+    // Basit token kontrolü - sadece temel redirection token'ları
+    if (ft_strcmp(expanded_str, ">>") == 0 || 
+        ft_strcmp(expanded_str, "<<") == 0 || 
+        ft_strcmp(expanded_str, ">") == 0 || 
+        ft_strcmp(expanded_str, "<") == 0 || 
+        ft_strcmp(expanded_str, "|") == 0)
+    {
+        // Token olarak işaretle (özel bir prefix ekle)
+        char *token_result = ft_strjoin("__TOKEN__", expanded_str);
+        free(expanded_str);
+        return token_result;
+    }
+    
+    return expanded_str;
+}
 
 static int	find_var_end(const char *str, int start)
 {
@@ -115,5 +138,9 @@ char *get_characters(char **prompt,t_shell *shell)
 	}
     if (result == NULL)
         return (ft_strdup(""));
+    
+    // Post-expansion token check - sadece unquoted expansion için
+    result = check_post_expansion_tokens(result, shell);
+    
     return (result);
 }
