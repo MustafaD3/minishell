@@ -6,11 +6,12 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:06:02 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/06 04:19:00 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/15 04:10:40 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
 
 void append_command(t_shell *shell, char *str,int builtin, t_command **temp)
 {
@@ -26,7 +27,7 @@ void append_command(t_shell *shell, char *str,int builtin, t_command **temp)
 		shell->command_p->builtin = builtin;
 		*temp = shell->command_p;
 	}
-	else if (*temp)  // *temp'in NULL olmadığından emin ol
+	else if (*temp)
 	{
 		(*temp)->next = malloc(sizeof(t_command));
 		(*temp)->next->command = ft_strdup(str);
@@ -75,31 +76,4 @@ void append_token(char *token, t_command **temp)
 {
 	(*temp)->token = ft_strdup(token);
 	(*temp)->token_flag = 1;
-}
-int prompt_type_control_loop(char **control_list,int type,char *str)
-{
-	int i;
-	char *temp_str;
-	
-	i = 0;
-	if(type)
-	{
-		while(control_list && control_list[i])
-			if (ft_strcmp(control_list[i++], str) == 0)
-				return 4;
-		if(access(str, F_OK) == 0)
-			return 3;
-		temp_str = ft_strjoin("/bin/",str);
-		i = access(temp_str,F_OK);
-		free(temp_str);
-		if(i == 0)
-			return 2;
-		else
-			return 1;
-	}
-	else
-		while (control_list[i])
-			if (ft_strcmp(control_list[i++], str) == 0)
-				return 5;
-	return 0;
 }

@@ -7,6 +7,7 @@ SRCS = minishell.c\
 		utils/file.c\
 		utils/error.c\
 	   	src/environment.c \
+		src/display_and_hostname.c \
 		src/execute_commands.c \
 		src/builtin/builtin.c \
 		src/builtin/env.c \

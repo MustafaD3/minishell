@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atursun <atursun@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 10:50:21 by atursun           #+#    #+#             */
-/*   Updated: 2024/10/18 11:45:01 by atursun          ###   ########.fr       */
+/*   Updated: 2025/08/15 02:55:35 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*assemble;
 	size_t	index;
 
-	if ((!s1) || (!s2))
-		return (ft_strdup(""));
+	if (!s1 && !s2)
+    	return (ft_strdup(""));
 	if (!s1)
 		return (ft_strdup(s2));
 	if (!s2)
-		return (ft_strdup(s1));
+    return (ft_strdup(s1));
 	assemble = (char *)malloc((ft_strlen(s1) + ft_strlen(s2)) + 1);
 	if (!assemble)
 		return (NULL);

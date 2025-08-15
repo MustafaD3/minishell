@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:23:54 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/04 18:51:17 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/15 01:29:17 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,14 +130,6 @@ void free_options(t_shell *shell)
 	}
 }
 
-void free_quote(t_quote *quote)
-{
-	if (!quote)
-		return;
-	free(quote->current_parameter);
-	free_multiple_input(quote->parameters);
-	free(quote);
-}
 void free_command(t_shell *shell)
 {
 	if (shell->command_p)

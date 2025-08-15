@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/07 03:28:38 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/15 04:49:33 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,26 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
 	char *temp_str;
     if (!str || !shell)
         return;
-    if(!*command && prompt_type_control_loop(shell->builtin,1,str) >= 1 && prompt_type_control_loop(shell->builtin,1,str) <= 4)
+
+    // Heredoc: önceki token '<<' ise, bu gelen str delimiter'dır
+    if (*temp && (*temp)->token_flag && (*temp)->token && ft_strcmp((*temp)->token, "<<") == 0)
     {
-		if(prompt_type_control_loop(shell->builtin,1,str) == 2)
+        free((*temp)->token);
+        (*temp)->token = NULL;
+        (*temp)->token_flag = 0;
+        return;
+    }
+    if(!*command && prompt_type_control(shell->builtin,1,str) >= 1 && prompt_type_control(shell->builtin,1,str) <= 4)
+    {
+		if(prompt_type_control(shell->builtin,1,str) == 2)
 			temp_str = ft_strjoin("/bin/",str);
 		else
 			temp_str = ft_strdup(str);
-		append_command(shell, temp_str, prompt_type_control_loop(shell->builtin,1,str), temp);
+		append_command(shell, temp_str, prompt_type_control(shell->builtin,1,str), temp);
 		free(temp_str);
 		*command = 1;
 	}
-    else if(prompt_type_control_loop(shell->tokens,0,str) == 5)
+    else if(prompt_type_control(shell->tokens,0,str) == 5)
     {
 		append_token(str,temp);
 		*command = 0;
@@ -45,15 +54,14 @@ void append(t_shell *shell, char *str,int *command, t_command **temp)
     
 }
 
-
 void parse_prompt(t_shell *shell)
 {
-	char	*temp_prompt;
-	char	*current_option;
-	char	*start;
-	char * (*parse_func)(char **,t_shell *);
-	int command;
-	t_command *command_temp_p;
+	char		*temp_prompt;
+	char		*current_option;
+	char		*start;
+	char 		*(*parse_func)(char **,t_shell *);
+	int			command;
+	t_command	*command_temp_p;
 
 	command = 0;
 	free_command(shell);
@@ -68,7 +76,7 @@ void parse_prompt(t_shell *shell)
 			parse_func = single_quote_control;
 		else if(*temp_prompt == '"')
 			parse_func = double_quote_control;
-		else if(*temp_prompt != ' ' && *temp_prompt != '\t')
+		else if(!ft_isspace(*temp_prompt))
 			parse_func = get_characters;
 		if(parse_func)
 		{
@@ -92,115 +100,83 @@ void parse_prompt(t_shell *shell)
 	free(start);
 }
 
-void	get_hostname(t_shell *shell)
+char	*my_getline(void)
 {
-	t_read_file	*host_f;
+    size_t	cap;
+    size_t	len;
+    char	*s;
+    int		ch;
+    char	*tmp;
 
-	shell->hostname = NULL;
-	host_f = malloc(sizeof(t_read_file));
-	if (!host_f)
-	{
-		shell->hostname = ft_strdup("localhost");
-		return;
-	}
-	
-	host_f->fd = open("/etc/hostname", O_RDONLY);
-	if (host_f->fd < 0)
-	{
-		shell->hostname = ft_strdup("localhost");
-		free(host_f);
-		return;
-	}
-	
-	host_f->b_read = 1;
-	host_f->total_b_read = 0;
-	while (host_f->b_read > 0)
-	{
-		host_f->b_read = read(host_f->fd, host_f->buffer, BUFFER_SIZE);
-		if (host_f->b_read <= 0)
-			break;
-			
-		host_f->result = malloc(host_f->total_b_read + host_f->b_read + 1);
-		if (!host_f->result)
-		{
-			close(host_f->fd);
-			free(host_f);
-			shell->hostname = ft_strdup("localhost");
-			return;
-		}
-		
-		if (shell->hostname)
-		{
-			ft_memcpy(host_f->result, shell->hostname, host_f->total_b_read);
-			free(shell->hostname);
-		}
-		ft_memcpy(host_f->result + host_f->total_b_read,
-			host_f->buffer, host_f->b_read);
-		host_f->total_b_read += host_f->b_read;
-		host_f->result[host_f->total_b_read] = '\0';
-		shell->hostname = host_f->result;
-	}
-	close(host_f->fd);
-	
-	if (shell->hostname && host_f->total_b_read > 0)
-		shell->hostname[host_f->total_b_read - 1] = '\0';
-	else if (!shell->hostname)
-		shell->hostname = ft_strdup("localhost");
-		
-	free(host_f);
+    cap = 128;
+    len = 0;
+    s = malloc(cap);
+    if (!s)
+        return (NULL);
+    while ((ch = getchar()) != EOF && ch != '\n')
+    {
+        if (len + 1 >= cap)
+        {
+            cap *= 2;
+            tmp = realloc(s, cap);
+            if (!tmp)
+            {
+                free(s);
+                return (NULL);
+            }
+            s = tmp;
+        }
+        s[len++] = (char)ch;
+    }
+    if (ch == EOF && len == 0)
+    {
+        free(s);
+        return (NULL);
+    }
+    s[len] = '\0';
+    return (s);
 }
 
-void	get_display_info(t_shell *shell)
+static int	non_interactive_mode(t_shell *shell)
 {
-	char	*path;
-	char	*properties;
-	char	*user;
-	char	*hostname;
-	
-	// Güvenli değer atamaları
-	user = getenv("USER");
-	if (!user)
-		user = "user";
-	
-	if (!shell->hostname)
-		hostname = "localhost";
-	else
-		hostname = shell->hostname;
-	
-	// current_dir kontrolü
-	if (!shell->current_dir)
-	{
-		path = ft_strdup("~");
-	}
-	else
-	{
-		path = ft_strstr(shell->current_dir, user);
-		if (!path)
-			path = ft_strdup("/");
-		else if (ft_strcmp(path, user) == 0)
-			path = ft_strdup("~");
-		else
-			path = ft_strjoin("~", path + ft_strlen(user));
-	}
-	
-	properties = string_concatation((char *[]){BBLUE,
-							user, "@", hostname,":", BMAGENTA, path, RESET, "$ ", NULL});
-	shell->display_info = set_and_free(shell->display_info, properties);
-	free(path);
+    char	*line;
+    size_t	n;
+    ssize_t	r;
+
+    line = NULL;
+    n = 0;
+    r = getline(&line, &n, stdin);
+    if (r <= 0)
+    {
+        free(line);
+        return (0);
+    }
+    if (r > 0 && line[r - 1] == '\n')
+        line[r - 1] = '\0';
+    shell->prompt = set_and_free(shell->prompt, line);
+    parse_prompt(shell);
+    return (1);
 }
 
 int	get_prompt(t_shell *shell)
 {
-	shell->prompt = set_and_free(shell->prompt, readline(shell->display_info));
-	if(!shell->prompt)
+	if(isatty(STDIN_FILENO))
 	{
-		printf("exit\n");
-		return 0;
+		shell->prompt = set_and_free(shell->prompt, readline(shell->display_info));
+		if(!shell->prompt)
+			return 0;
+		if(shell->prompt && *shell->prompt)
+		{
+			parse_prompt(shell);
+			add_history(shell->prompt);
+		}
+		else
+		{
+			free_command(shell);
+			shell->command_p = NULL;
+		}
 	}
-	if(shell->prompt && *shell->prompt)
-	{
-		parse_prompt(shell);
-		add_history(shell->prompt);
-	}
+	else
+		return (non_interactive_mode(shell));
 	return 1;
 }

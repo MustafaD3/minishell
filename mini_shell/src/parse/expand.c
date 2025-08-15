@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/07 03:35:21 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/15 04:25:47 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ static char	*extract_and_expand_var(const char *str, int start, int end, t_shell
     
     expand_value = ft_strndup(str + start, end - start);
     if (!expand_value)
-        return (ft_strdup(""));
-    
-    // Use minishell's environment instead of system getenv
+			return (ft_strdup(""));
     expanded = mini_getenv(expand_value, shell->envp);
     if (expanded)
         expanded = ft_strdup(expanded);
@@ -76,6 +74,7 @@ char *get_characters(char **prompt,t_shell *shell)
     int i;
     int old_i;
 
+	shell->is_quote = 0;
     result = NULL;
     tmp = NULL;
     i = 0;
@@ -84,32 +83,53 @@ char *get_characters(char **prompt,t_shell *shell)
     {
         old_i = i;
         if ((*prompt)[i] == '$')
-            tmp = expand_if_dollar(*prompt, &i,shell);
+        {
+			tmp = expand_if_dollar(*prompt, &i,shell);
+			if(*tmp)
+			{
+				if((*prompt)[i] == '"' || (*prompt)[i] == '\'')
+				{
+					free(tmp);
+					tmp = ft_strdup("");
+				}
+			}
+		}
         else
             tmp = get_next_char(*prompt, &i);
-        
         if (i <= old_i) 
             i = old_i + 1;
-        if (tmp) {
-            new_result = ft_strjoin(result ? result : "", tmp);
+        if (tmp)
+		{
+            new_result = ft_strjoin(result, tmp);
             if (result)
                 free(result);
             result = new_result;
             free(tmp);
         }
     }
-    *prompt += i;
+	*prompt += i;
 	if(**prompt == '\'' && *(*prompt + 1) != '\'')
 	{
-		tmp = result;
-		result = ft_strjoin(tmp,single_quote_control(prompt,shell));
+		tmp = single_quote_control(prompt,shell);
+		result = set_and_free(result,ft_strjoin(result, tmp));
 		if (tmp)
 			free(tmp);
 	}
 	else if(**prompt == '"' && *(*prompt + 1) != '"')
 	{
-		tmp = result;
-		result = ft_strjoin(tmp,double_quote_control(prompt,shell));
+		tmp = double_quote_control(prompt,shell);
+		result = set_and_free(result, ft_strjoin(result, tmp));
+		if (tmp)
+			free(tmp);
+	}
+	else if (**prompt == '\'' && *(*prompt + 1) == '\'')
+			*prompt += 2;
+	else if (**prompt == '"' && *(*prompt + 1) == '"')
+			*prompt += 2;
+	if(**prompt && !ft_isspace(**prompt) && **prompt != '\'' && **prompt != '"')
+	{
+		tmp = get_characters(prompt,shell);
+		result = set_and_free(result, ft_strjoin(result, tmp));
 		if (tmp)
 			free(tmp);
 	}
