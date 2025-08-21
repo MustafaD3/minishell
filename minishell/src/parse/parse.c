@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/21 00:37:01 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/21 20:33:53 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ void	parse_prompt(t_shell *shell)
 				else
 					append(shell, current_option, &command, &shell->command_p);
 			}
+			else
+				break;
 			if (current_option)
 				free(current_option);
 			continue ;

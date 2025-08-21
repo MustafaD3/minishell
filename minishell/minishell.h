@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/21 00:12:51 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/21 20:47:19 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ char	*single_quote_control(char **prompt,t_shell *shell);
 char	*double_quote_control(char **prompt,t_shell *shell);
 void	re_call(t_shell *shell, char**result,
 	char **prompt, char *func(char **, t_shell *));
+char	*dq_expand_and_concat(const char *str, int start, int end,
+	t_shell *shell);
 char 	*get_characters(char **prompt,t_shell *shell);
 char 	*get_redirect_operator(char **prompt,t_shell *shell);
 char 	*expand_if_dollar(const char *str, int *i,t_shell *shell);

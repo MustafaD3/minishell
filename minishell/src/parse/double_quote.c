@@ -6,13 +6,13 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 20:07:25 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/21 00:11:31 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/21 20:46:58 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static char	*dq_expand_and_concat(const char *str, int start, int end,
+char	*dq_expand_and_concat(const char *str, int start, int end,
 	t_shell *shell)
 {
 	char	*res;
