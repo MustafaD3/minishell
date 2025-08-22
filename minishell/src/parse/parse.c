@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/21 20:33:53 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/22 22:25:36 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	append(t_shell *shell, char *str, int *command, t_command **temp)
 	char			*temp_str;
 	int				result;
 	int				token_result;
-	t_parameters	*new_param;
 
 	if (!str || !shell)
 		return ;
@@ -36,28 +35,11 @@ void	append(t_shell *shell, char *str, int *command, t_command **temp)
 	else if (token_result == 4)
 	{
 		if (*temp)
-		{
-			new_param = malloc(sizeof(t_parameters));
-			new_param->parameter = ft_strdup(str);
-			new_param->next = NULL;
-			append_parameter(new_param, temp);
-		}
+			append_parameter(temp, str);
 	}
 	else
-	{
-		if (*temp)
-		{
-			new_param = malloc(sizeof(t_parameters));
-			new_param->parameter = ft_strdup(str);
-			new_param->next = NULL;
-			append_parameter(new_param, temp);
-		}
-	}
-}
-
-int	is_whitespace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+		if(*temp)
+			append_parameter(temp, str);
 }
 
 void	parse_prompt(t_shell *shell)
@@ -67,9 +49,12 @@ void	parse_prompt(t_shell *shell)
 	char		*start;
 	char		*(*parse_func)(char **, t_shell *);
 	int			command;
+	int			had_pipe;
 	t_command	*command_temp_p;
 
 	command = 0;
+	had_pipe = 0;
+	shell->parse_error = 0; // reset
 	free_command(shell);
 	command_temp_p = NULL;
 	shell->command_p = command_temp_p;
@@ -86,12 +71,21 @@ void	parse_prompt(t_shell *shell)
 			parse_func = get_redirect_operator;
 		else if (*temp_prompt == '|')
 		{
-			temp_prompt++;
+			if (command == 0)
+			{
+				write(2, "syntax error near unexpected token `|'\n", 40);
+				shell->last_exit_code = 258;
+				shell->parse_error = 1;
+				free(start);
+				return ;
+			}
+			had_pipe = 1;
 			command = 0;
 			command_temp_p = NULL;
+			temp_prompt++;
 			continue ;
 		}
-		else if (!is_whitespace(*temp_prompt))
+		else if (!ft_isspace(*temp_prompt))
 			parse_func = get_characters;
 		if (parse_func)
 		{
@@ -107,12 +101,20 @@ void	parse_prompt(t_shell *shell)
 					append(shell, current_option, &command, &shell->command_p);
 			}
 			else
-				break;
+				break ;
 			if (current_option)
 				free(current_option);
 			continue ;
 		}
 		temp_prompt++;
+	}
+	if (had_pipe && command == 0)
+	{
+		write(2, "syntax error near unexpected token `|'\n", 40);
+		shell->last_exit_code = 258;
+		shell->parse_error = 1;
+		free(start);
+		return ;
 	}
 	shell->command_p = command_temp_p;
 	process_redirections(shell);

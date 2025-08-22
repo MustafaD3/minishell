@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:03:40 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/19 02:54:59 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/22 21:11:02 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,31 @@ int	prompt_type_control_loop(char **control_list, int type, char *str)
 		}
 	}
 	return (0);
+}
+char	*re_control(char *tmp, char *result, char **prompt, t_shell *shell)
+{
+	if(**prompt == '\'')
+	{
+		tmp = result;
+		result = ft_strjoin(tmp,single_quote_control(prompt,shell));
+		if (tmp)
+			free(tmp);
+	}
+	else if(**prompt == '"')
+	{
+		tmp = result;
+		result = ft_strjoin(tmp,double_quote_control(prompt,shell));
+		if (tmp)
+			free(tmp);
+	}
+	else if(**prompt && !ft_isspace(**prompt))
+	{
+		tmp = result;
+		result = ft_strjoin(tmp,get_characters(prompt,shell));
+		if (tmp)
+			free(tmp);
+	}
+	if(result == NULL)
+		return (ft_strdup(""));
+	return (result);
 }

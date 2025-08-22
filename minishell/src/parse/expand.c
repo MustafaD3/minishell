@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/21 21:07:00 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/22 19:24:58 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ char	*get_characters(char **prompt, t_shell *shell)
     result = NULL;
     tmp = NULL;
     i = 0;
-    while ((*prompt)[i] && (*prompt)[i] != ' ' && (*prompt)[i] != '\t' && 
+    while ((*prompt)[i] && !ft_isspace((*prompt)[i]) && 
         (*prompt)[i] != '\'' && (*prompt)[i] != '"')
     {
         old_i = i;
@@ -93,10 +93,10 @@ char	*get_characters(char **prompt, t_shell *shell)
             tmp = expand_if_dollar(*prompt, &i,shell);
         else
             tmp = get_next_char(*prompt, &i);
-        
         if (i <= old_i) 
             i = old_i + 1;
-        if (tmp) {
+        if (tmp)
+		{
             new_result = ft_strjoin(result ? result : "", tmp);
             if (result)
                 free(result);
@@ -105,30 +105,7 @@ char	*get_characters(char **prompt, t_shell *shell)
         }
     }
     *prompt += i;
-	if(**prompt == '\'' && *(*prompt + 1) != '\'')
-	{
-		tmp = result;
-		result = ft_strjoin(tmp,single_quote_control(prompt,shell));
-		if (tmp)
-			free(tmp);
-	}
-	else if(**prompt == '"' && *(*prompt + 1) != '"')
-	{
-		tmp = result;
-		result = ft_strjoin(tmp,double_quote_control(prompt,shell));
-		if (tmp)
-			free(tmp);
-	}
-	else if(**prompt && !ft_isspace(**prompt))
-	{
-		tmp = result;
-		result = ft_strjoin(tmp,get_characters(prompt,shell));
-		if (tmp)
-			free(tmp);
-	}
-	if(result == NULL)
-		return (ft_strdup(""));
-    return (result);
+    return (re_control(tmp, result, prompt, shell));
 }
 
 char	*get_redirect_operator(char **prompt, t_shell *shell)
@@ -138,7 +115,6 @@ char	*get_redirect_operator(char **prompt, t_shell *shell)
 	(void)shell;
 	if (!*prompt || !**prompt)
 		return (NULL);
-		
 	if (**prompt == '>' && *(*prompt + 1) == '>')
 	{
 		result = ft_strdup(">>");

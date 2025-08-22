@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:10:07 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/21 20:47:19 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/22 22:24:16 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,17 +99,11 @@ typedef struct s_shell
 	char 	**options;
 	int		last_exit_code;
 	int		is_quote;
+	int		parse_error;
 	t_command *command_p;
 	// İleride komut yapısı vb. ekleyebiliriz
 }	t_shell;
 
-typedef struct s_quote
-{
-	char	**parameters;
-	char	*current_parameter;
-	int		flag;
-	int		len;
-}t_quote;
 
 typedef struct s_read_file_info
 {
@@ -134,6 +128,7 @@ char	*single_quote_control(char **prompt,t_shell *shell);
 char	*double_quote_control(char **prompt,t_shell *shell);
 void	re_call(t_shell *shell, char**result,
 	char **prompt, char *func(char **, t_shell *));
+char	*re_control(char *tmp, char *result, char **prompt, t_shell *shell);
 char	*dq_expand_and_concat(const char *str, int start, int end,
 	t_shell *shell);
 char 	*get_characters(char **prompt,t_shell *shell);
@@ -141,10 +136,9 @@ char 	*get_redirect_operator(char **prompt,t_shell *shell);
 char 	*expand_if_dollar(const char *str, int *i,t_shell *shell);
 char 	*get_next_char(const char *str, int *i);
 void 	append_command(t_shell *shell, char *str,int builtin, t_command **temp);
-void 	append_parameter(t_parameters *new_param, t_command **temp);
+void	append_parameter(t_command **temp, char *str);
 void	append_token(char *str, t_command **temp);
 int 	prompt_type_control_loop(char **control_list,int type,char *str);
-int		is_whitespace(char c);
 
 //EXECUTE
 void 	execute(t_shell *shell);

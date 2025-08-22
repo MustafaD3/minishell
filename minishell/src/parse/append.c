@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:06:02 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/21 00:13:07 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/22 21:10:43 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,14 @@ void	append_command(t_shell *shell, char *str, int builtin, t_command **temp)
 	}
 }
 
-void	append_parameter(t_parameters *new_param, t_command **temp)
+void	append_parameter(t_command **temp, char *str)
 {
 	t_parameters	*p;
+	t_parameters	*new_param;
 
+	new_param = malloc(sizeof(t_parameters));
+	new_param->parameter = ft_strdup(str);
+	new_param->next = NULL;
 	if (!(*temp)->parameters_p)
 		(*temp)->parameters_p = new_param;
 	else
