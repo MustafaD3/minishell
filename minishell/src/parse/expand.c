@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 22:24:27 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/22 19:24:58 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/23 01:05:59 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,36 +76,36 @@ char	*get_next_char(const char *str, int *i)
 
 char	*get_characters(char **prompt, t_shell *shell)
 {
-    char	*result;
-    char	*tmp;
-    char	*new_result;
-    int		i;
-    int		old_i;
+	char	*result;
+	char	*tmp;
+	char	*new_result;
+	int		i;
+	int		old_i;
 
-    result = NULL;
-    tmp = NULL;
-    i = 0;
-    while ((*prompt)[i] && !ft_isspace((*prompt)[i]) && 
-        (*prompt)[i] != '\'' && (*prompt)[i] != '"')
-    {
-        old_i = i;
-        if ((*prompt)[i] == '$')
-            tmp = expand_if_dollar(*prompt, &i,shell);
-        else
-            tmp = get_next_char(*prompt, &i);
-        if (i <= old_i) 
-            i = old_i + 1;
-        if (tmp)
+	result = NULL;
+	tmp = NULL;
+	i = 0;
+	while ((*prompt)[i] && !ft_isspace((*prompt)[i]) &&
+		(*prompt)[i] != '\'' && (*prompt)[i] != '"')
+	{
+		old_i = i;
+		if ((*prompt)[i] == '$')
+			tmp = expand_if_dollar(*prompt, &i, shell);
+		else
+			tmp = get_next_char(*prompt, &i);
+		if (i <= old_i)
+			i = old_i + 1;
+		if (tmp)
 		{
-            new_result = ft_strjoin(result ? result : "", tmp);
-            if (result)
-                free(result);
-            result = new_result;
-            free(tmp);
-        }
-    }
-    *prompt += i;
-    return (re_control(tmp, result, prompt, shell));
+			new_result = ft_strjoin(result ? result : "", tmp);
+			if (result)
+				free(result);
+			result = new_result;
+			free(tmp);
+		}
+	}
+	*prompt += i;
+	return (re_control(tmp, result, prompt, shell));
 }
 
 char	*get_redirect_operator(char **prompt, t_shell *shell)

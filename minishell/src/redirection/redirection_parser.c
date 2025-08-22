@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_parser.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 15:45:00 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/16 15:47:46 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/23 01:25:46 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int	handle_param_redirect(t_command *cmd, t_parameters *param,
 	if (!param->parameter || !is_redirect_token(param->parameter)
 		|| !param->next || !param->next->parameter)
 		return (0);
-	redirect = create_redirect(get_redirect_type(param->parameter),
-			param->next->parameter);
+	redirect = create_redirect(param->next->parameter,
+			get_redirect_type(param->parameter));
 	if (!redirect)
 		return (0);
 	add_redirect(cmd, redirect);

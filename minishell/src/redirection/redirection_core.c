@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_core.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 21:00:00 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/14 19:20:44 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/23 01:24:56 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-t_redirect	*create_redirect(t_redirect_type type, char *filename)
+t_redirect	*create_redirect(char *filename, t_redirect_type type)
 {
 	t_redirect	*redirect;
 

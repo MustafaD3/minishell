@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_apply.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 20:35:00 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/14 19:20:44 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/23 01:25:26 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@ void	process_token_redirections(t_command *cmd)
 	next_cmd = cmd->next;
 	if (!next_cmd || !next_cmd->command)
 		return ;
-	redirect = create_redirect(get_redirect_type(cmd->token),
-			next_cmd->command);
+	redirect = create_redirect(next_cmd->command,
+			get_redirect_type(cmd->token));
 	if (!redirect)
 		return ;
 	add_redirect(cmd, redirect);

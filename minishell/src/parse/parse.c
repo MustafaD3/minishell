@@ -6,7 +6,7 @@
 /*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 07:09:35 by mdalkili          #+#    #+#             */
-/*   Updated: 2025/08/22 22:25:36 by mdalkili         ###   ########.fr       */
+/*   Updated: 2025/08/23 01:04:52 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,91 +34,53 @@ void	append(t_shell *shell, char *str, int *command, t_command **temp)
 	}
 	else if (token_result == 4)
 	{
+		if (!*command)
+			(append_command(shell, "", 0, temp), *command = 1);
 		if (*temp)
 			append_parameter(temp, str);
 	}
 	else
-		if(*temp)
-			append_parameter(temp, str);
+		append_parameter(temp, str);
 }
 
 void	parse_prompt(t_shell *shell)
 {
-	char		*temp_prompt;
-	char		*current_option;
-	char		*start;
-	char		*(*parse_func)(char **, t_shell *);
-	int			command;
-	int			had_pipe;
-	t_command	*command_temp_p;
+	t_parse	parse;
 
-	command = 0;
-	had_pipe = 0;
-	shell->parse_error = 0; // reset
-	free_command(shell);
-	command_temp_p = NULL;
-	shell->command_p = command_temp_p;
-	temp_prompt = ft_strdup(shell->prompt);
-	start = temp_prompt;
-	while (temp_prompt && *temp_prompt)
+	reset_parse(&parse, shell);
+	while (parse.temp_prompt && *parse.temp_prompt)
 	{
-		parse_func = NULL;
-		if (*temp_prompt == '\'')
-			parse_func = single_quote_control;
-		else if (*temp_prompt == '"')
-			parse_func = double_quote_control;
-		else if (*temp_prompt == '>' || *temp_prompt == '<')
-			parse_func = get_redirect_operator;
-		else if (*temp_prompt == '|')
+		parse.parse_func = NULL;
+		if (*parse.temp_prompt == '\'')
+			parse.parse_func = single_quote_control;
+		else if (*parse.temp_prompt == '"')
+			parse.parse_func = double_quote_control;
+		else if (*parse.temp_prompt == '>' || *parse.temp_prompt == '<')
+			parse.parse_func = get_redirect_operator;
+		else if (*parse.temp_prompt == '|')
 		{
-			if (command == 0)
-			{
-				write(2, "syntax error near unexpected token `|'\n", 40);
-				shell->last_exit_code = 258;
-				shell->parse_error = 1;
-				free(start);
-				return ;
-			}
-			had_pipe = 1;
-			command = 0;
-			command_temp_p = NULL;
-			temp_prompt++;
+			if (parse.command == 0)
+				return (pipe_syntax_error(shell, &parse), (void)0);
+			parse.had_pipe = 1;
+			parse.command = 0;
+			parse.command_temp_p = NULL;
+			parse.temp_prompt++;
 			continue ;
 		}
-		else if (!ft_isspace(*temp_prompt))
-			parse_func = get_characters;
-		if (parse_func)
+		else if (!ft_isspace(*parse.temp_prompt))
+			parse.parse_func = get_characters;
+		if (parse.parse_func)
 		{
-			current_option = parse_func(&temp_prompt, shell);
-			if (current_option != NULL)
-			{
-				if (!command_temp_p)
-				{
-					append(shell, current_option, &command, &command_temp_p);
-					shell->command_p = command_temp_p;
-				}
-				else
-					append(shell, current_option, &command, &shell->command_p);
-			}
-			else
+			if (run_parse(&parse, shell))
 				break ;
-			if (current_option)
-				free(current_option);
 			continue ;
 		}
-		temp_prompt++;
+		parse.temp_prompt++;
 	}
-	if (had_pipe && command == 0)
-	{
-		write(2, "syntax error near unexpected token `|'\n", 40);
-		shell->last_exit_code = 258;
-		shell->parse_error = 1;
-		free(start);
-		return ;
-	}
-	shell->command_p = command_temp_p;
-	process_redirections(shell);
-	free(start);
+	if (parse.had_pipe && parse.command == 0)
+		return (pipe_syntax_error(shell, &parse), (void)0);
+	shell->command_p = parse.command_temp_p;
+	(process_redirections(shell), free(parse.start));
 }
 
 int	get_prompt(t_shell *shell)
