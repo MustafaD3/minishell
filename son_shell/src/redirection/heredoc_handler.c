@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_handler.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makboga <makboga@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdalkili <mdalkilic344@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 14:41:48 by makboga           #+#    #+#             */
-/*   Updated: 2025/08/28 13:28:35 by makboga          ###   ########.fr       */
+/*   Updated: 2025/08/29 18:50:24 by mdalkili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	heredoc_read_loop(char *delim_copy, int pipe_fd[2], t_req *req)
 			close(pipe_fd[1]);
 			free(delim_copy);
 			free_shell(req->shell);
-			exit(130);
+			exit(0);
 		}
 		if (ft_strcmp(line, delim_copy) == 0)
 		{
